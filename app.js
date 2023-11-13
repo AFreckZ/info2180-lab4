@@ -1,44 +1,52 @@
-window.onload = function(){
+window.onload = function () {
     var searchBtn = document.querySelector("button");
-    const req = new XMLHttpRequest();
-    function defaultAction(){
-        let url = "http://localhost/info2180-lab4/superheroes.php";
-        req.onreadystatechange = function(){
-        if (req.readyState === XMLHttpRequest.DONE){
-            if (req.status === 200){
-                document.querySelector("div").innerHTML = req.responseText;
-            }}
-        }
-        req.open("GET", url);
-        req.send();
+    var heroText = document.getElementById("heroText");
+    var resultDiv = document.querySelector("div");
+
+    function defaultAction() {
+        var url = "http://localhost/info2180-lab4/index.html";
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                resultDiv.innerHTML = data;
+            })
+            .catch(error => console.error('Error fetching data:', error));
     }
 
-    function findHero(heroText){
-        let url = "http://localhost/info2180-lab4/superheroes.php?heroName=" + heroText;
-        req.onreadystatechange = function(){
-            if (req.readyState === XMLHttpRequest.DONE){
-                if (req.status === 200){
-                    document.querySelector("div").innerHTML = req.responseText;
-                }}
-            }
-            req.open("GET", url);
-            req.send();
+    function findHero(heroTextValue) {
+        var url = "http://localhost/info2180-lab4/superheroes.php?heroName=" + encodeURIComponent(heroTextValue);
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                resultDiv.innerHTML = data;
+            })
+            .catch(error => console.error('Error fetching data:', error));
     }
 
-    function searchEvent(e){
+    function searchEvent(e) {
         e.preventDefault();
-        document.querySelector("div").innerHTML = "";
-        heroText.value = sanitize(heroText.value.trim());
-        if (heroText.value == ""){
-            defaultAction(e);
+        resultDiv.innerHTML = "";
+        var sanitizedValue = sanitize(heroText.value.trim());
+        if (sanitizedValue === "") {
+            defaultAction();
+        } else {
+            findHero(sanitizedValue);
         }
-        else{
-            findHero(heroText.value);
-        }
-    }   
-
-    function sanitize(word){
-        return word.replace(/</g, "").replace(/>/g,"").replace(/&/,"").replace(/"/g);
     }
-    searchBtn.addEventListener("click", searchEvent)    
+
+    function sanitize(word) {
+        return word.replace(/</g, "").replace(/>/g, "").replace(/&/g, "").replace(/"/g, "");
+    }
+
+    searchBtn.addEventListener("click", searchEvent);
 };
