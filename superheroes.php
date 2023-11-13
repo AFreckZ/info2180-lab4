@@ -65,19 +65,15 @@ $superheroes = [
 
 ?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
-
 <?php if (empty($_GET["heroName"])): ?>
     <ul>
         <?php foreach ($superheroes as $superhero): ?>
         <li><?= $superhero['alias']; ?></li>
         <?php endforeach;?>
     </ul>
-    <?php elseif (isset($_GET["heroName"])):
+
+
+<?php elseif (isset($_GET["heroName"])):
     $retVal = null;
     $name = htmlentities($_GET["heroName"]);
     foreach ($superheroes as $superhero): 
